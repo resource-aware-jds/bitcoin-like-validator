@@ -25,16 +25,9 @@ type SubmitAnswerReq struct {
 }
 
 func (h *Handler) SubmitSuccessTask(c *gin.Context) {
-	var data SubmitAnswerReq
-	err := c.ShouldBindJSON(&data)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"name": "Bind Err",
-			"err":  err,
-		})
-	}
+	data := c.Param("answer")
 
-	resultBase64 := h.generateBase64Hash(data.Answer)
+	resultBase64 := h.generateBase64Hash(data)
 
 	if h.cfg.ExpectedHash != resultBase64 {
 		c.JSON(http.StatusBadRequest, gin.H{

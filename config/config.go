@@ -11,12 +11,12 @@ type Config struct {
 }
 
 func Load() Config {
-	err := godotenv.Load("./env")
+	err := godotenv.Load(".env")
 	if err != nil {
 		logrus.Warn("Can't load env file")
 	}
 
 	var config Config
-	envconfig.MustProcess("RAJDS", &config)
+	envconfig.MustProcess("", &config)
 	return config
 }
