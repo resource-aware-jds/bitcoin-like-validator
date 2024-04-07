@@ -20,10 +20,6 @@ func ProvideHandler(cfg config.Config) Handler {
 	}
 }
 
-type SubmitAnswerReq struct {
-	Answer string `json:"answer"`
-}
-
 func (h *Handler) SubmitSuccessTask(c *gin.Context) {
 	data := c.Param("answer")
 
@@ -36,7 +32,8 @@ func (h *Handler) SubmitSuccessTask(c *gin.Context) {
 		return
 	}
 
-	logrus.Info("Someone found the correct answer! at ", time.Now().String())
+	result := c.GetHeader("X-NODE-ID")
+	logrus.Infof("%s found the correct answer! at %s", result, time.Now().String())
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Correct!",
