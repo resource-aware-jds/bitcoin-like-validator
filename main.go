@@ -20,6 +20,7 @@ func main() {
 
 	srv.Engine().GET("/submit-answer/:answer", han.SubmitSuccessTask)
 	srv.Engine().GET("/:data", han.GetTheHashBase64)
+	srv.Engine().GET("/round-has-winner", han.CheckRoundWinner)
 
 	srv.Serve()
 

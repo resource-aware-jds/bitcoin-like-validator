@@ -12,6 +12,8 @@ import (
 
 type Handler struct {
 	cfg config.Config
+
+	round map[string]bool
 }
 
 func ProvideHandler(cfg config.Config) Handler {
@@ -35,6 +37,9 @@ func (h *Handler) SubmitSuccessTask(c *gin.Context) {
 	result := c.GetHeader("X-NODE-ID")
 	logrus.Infof("%s found the correct answer! at %s", result, time.Now().String())
 
+	roundID := c.GetHeader("X-ROUND-ID")
+	h.round[roundID] = true
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Correct!",
 	})
@@ -57,4 +62,16 @@ func (h *Handler) GetTheHashBase64(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": h.generateBase64Hash(data),
 	})
+}
+
+func (h *Handler) CheckRoundWinner(c *gin.Context) {
+	roundID := c.GetHeader("X-ROUND-ID")
+
+	ok := h.round[roundID]
+	if ok {
+		c.JSON(http.StatusBadRequest, gin.H{"err": "Already got the winner"})
+		return
+	}
+
+	c.Status(http.StatusOK)
 }
