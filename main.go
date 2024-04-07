@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bitcoin-like-validator/config"
+	"bitcoin-like-validator/handler"
 	"bitcoin-like-validator/pkg/http"
 	"os"
 	"os/signal"
@@ -8,9 +10,15 @@ import (
 )
 
 func main() {
+	cfg := config.Load()
+
 	srv, cleanup := http.ProvideHttpServer(http.ServerConfig{
 		Port: 39999,
 	})
+
+	han := handler.ProvideHandler(cfg)
+
+	srv.Engine().POST("/submit-answer", han.SubmitSuccessTask)
 
 	srv.Serve()
 
