@@ -34,12 +34,7 @@ func (h *Handler) SubmitSuccessTask(c *gin.Context) {
 		})
 	}
 
-	hasher := sha256.New()
-	hasher.Write([]byte(data.Answer))
-
-	result := hasher.Sum(nil)
-
-	resultBase64 := base64.StdEncoding.EncodeToString(result)
+	resultBase64 := h.generateBase64Hash(data.Answer)
 
 	if h.cfg.ExpectedHash != resultBase64 {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -54,4 +49,22 @@ func (h *Handler) SubmitSuccessTask(c *gin.Context) {
 		"message": "Correct!",
 	})
 
+}
+
+func (h *Handler) generateBase64Hash(data string) string {
+	hasher := sha256.New()
+	hasher.Write([]byte(data))
+
+	result := hasher.Sum(nil)
+
+	resultBase64 := base64.StdEncoding.EncodeToString(result)
+	return resultBase64
+}
+
+func (h *Handler) GetTheHashBase64(c *gin.Context) {
+	data := c.Param("data")
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": h.generateBase64Hash(data),
+	})
 }

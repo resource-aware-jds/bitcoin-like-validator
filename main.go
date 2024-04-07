@@ -19,6 +19,7 @@ func main() {
 	han := handler.ProvideHandler(cfg)
 
 	srv.Engine().POST("/submit-answer", han.SubmitSuccessTask)
+	srv.Engine().GET("/:data", han.GetTheHashBase64)
 
 	srv.Serve()
 
