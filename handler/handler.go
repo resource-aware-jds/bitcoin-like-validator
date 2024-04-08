@@ -18,7 +18,8 @@ type Handler struct {
 
 func ProvideHandler(cfg config.Config) Handler {
 	return Handler{
-		cfg: cfg,
+		cfg:   cfg,
+		round: make(map[string]bool),
 	}
 }
 
